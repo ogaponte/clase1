@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Database Connector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css" />
+    <style>
+      body {
+        background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      }
+      .container {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+        padding: 2.5rem 2rem 2rem 2rem;
+        margin-top: 3rem;
+        width: 100%;
+        max-width: 540px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      h1 {
+        color: #2d3748;
+        font-size: 2.2rem;
+        margin-bottom: 1.2rem;
+        letter-spacing: 0.01em;
+      }
+      #loadBtn {
+        background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0.7em 2em;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        margin-bottom: 1.5em;
+        box-shadow: 0 2px 8px rgba(56,189,248,0.08);
+        transition: background 0.2s;
+      }
+      #loadBtn:hover {
+        background: linear-gradient(90deg, #1d4ed8 0%, #0ea5e9 100%);
+      }
+      #piecesTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1em;
+        background: #f9fafb;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+      #piecesTable th, #piecesTable td {
+        padding: 0.8em 1em;
+        text-align: left;
+      }
+      #piecesTable th {
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+      #piecesTable tr:nth-child(even) {
+        background: #e0e7ef;
+      }
+      #piecesTable tr:hover {
+        background: #bae6fd;
+      }
+      #errorMsg {
+        color: #e11d48;
+        font-weight: 500;
+        margin-top: 0.5em;
+        text-align: center;
+      }
+      @media (max-width: 600px) {
+        .container {
+          padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+          margin-top: 1.2rem;
+        }
+        h1 {
+          font-size: 1.3rem;
+        }
+        #loadBtn {
+          font-size: 1rem;
+          padding: 0.6em 1.2em;
+        }
+        #piecesTable th, #piecesTable td {
+          padding: 0.5em 0.4em;
+          font-size: 0.95em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Conexión a Base de Datos</h1>
+      <button id="loadBtn">Cargar datos</button>
+      <table id="piecesTable" style="display:none;">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pieza</th>
+            <th>Fecha de creación</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="errorMsg"></div>
+    </div>
+  </body>
+  <script>
+    document.getElementById('loadBtn').addEventListener('click', async () => {
+      const table = document.getElementById('piecesTable');
+      const tbody = table.querySelector('tbody');
+      const errorMsg = document.getElementById('errorMsg');
+      errorMsg.textContent = '';
+      tbody.innerHTML = '';
+      table.style.display = 'none';
+      try {
+        const data = await window.dbAPI.getPieces();
+        if (data && data.error) {
+          errorMsg.textContent = 'Error: ' + data.error;
+          return;
+        }
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${row.id}</td><td>${row.piece}</td><td>${row.create_datetime}</td>`;
+            tbody.appendChild(tr);
+          });
+          table.style.display = '';
+        } else {
+          errorMsg.textContent = 'No hay datos.';
+        }
+      } catch (e) {
+        errorMsg.textContent = 'Error: ' + e.message;
+      }
+    });
+  </script>
+</html>
