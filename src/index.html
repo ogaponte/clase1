@@ -115,8 +115,64 @@
       </table>
       <div id="errorMsg"></div>
     </div>
+
+    <div id="bananas_interface"></div>
+
   </body>
   <script>
+
+    var nombre = "Esta es una variable de texto";
+    var numero = 42;
+    var esVerdadero = true; //Boolean
+    esVerdadero = false; //Boolean
+    var sinValor = null; //Null
+    var indefinido; //Undefined
+    var lista = ["manzana", "banana", "cereza", "ss", "x", "", "Uli", "es genial", "Orlandito le irá muy bien mañana", "cerveza", "vino", "banana", "io", "banana", "Banan"]; //Array
+    
+    // console.log("**lista: ", lista[12]);
+    // console.log("**lista longitud: ", lista.length);
+    // var ultimo_valor = lista[lista.length - 1];
+    // console.log("**ultimo_valor: ", ultimo_valor);
+    var cont_banana = 0;
+
+    for (let i = 0; i < lista.length; i++) {
+      // console.log("*** lista: ", lista[i]);
+      if (lista[i] === "banana") {
+        // cont_banana++;
+        document.getElementById('bananas_interface').innerHTML += "<img src='banana.png' alt='banana' width='32' height='32' style='margin:2px;' /><br/>";
+      }else{
+        console.log("No es banana: ", lista[i]);
+      }
+      
+    }
+    
+
+    // lista.forEach(e => {
+    //   if(e != "banana"){
+    //     console.log("No es banana: ", e);
+    //   }
+    // });
+
+    // Valor 1 
+    
+
+    // console.log("**cont_banana: ", cont_banana);
+
+    var persona = {
+      nombre: "Juan", 
+      edad: 30, 
+      ciudad: "Madrid",
+      esEstudiante: false,
+      habilidades: ["programación", "dibujo", "cocina"]
+    }; //Objeto
+
+    var lista_mix = ["texto", 100, false, {clave: "valor"}, [1,2,3,[1,2,3,[123,123]]]]; //Array mixto
+    console.log("**lista_mix: ", lista_mix);
+    
+    function editar(id, piece) {
+      console.log('Voy a editar: ' + id + ' - ' + piece);
+    } 
+
     document.getElementById('loadBtn').addEventListener('click', async () => {
       const table = document.getElementById('piecesTable');
       const tbody = table.querySelector('tbody');
@@ -133,7 +189,7 @@
         if (Array.isArray(data) && data.length > 0) {
           data.forEach(row => {
             const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${row.id}</td><td>${row.piece}</td><td>${row.create_datetime}</td>`;
+            tr.innerHTML = `<td>${row.id}</td><td>${row.piece}</td><td>${row.create_datetime} <button onclick="editar(${row.id}, '${row.piece}')">Editar</button></td>`;
             tbody.appendChild(tr);
           });
           table.style.display = '';
